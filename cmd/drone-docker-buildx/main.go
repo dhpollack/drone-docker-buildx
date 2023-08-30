@@ -7,11 +7,11 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
-	"github.com/thegeeklab/drone-docker-buildx/plugin"
+	"github.com/dhpollack/drone-docker-buildx/plugin"
 	"github.com/urfave/cli/v2"
 
-	"github.com/thegeeklab/drone-plugin-lib/v2/drone"
-	"github.com/thegeeklab/drone-plugin-lib/v2/urfave"
+	"github.com/dhpollack/drone-plugin-lib/v2/drone"
+	"github.com/dhpollack/drone-plugin-lib/v2/urfave"
 )
 
 //nolint:gochecknoglobals

@@ -1,0 +1,44 @@
+name: Push - Build Drone Docker BuildX Plugin
+
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.20.0'
+      - name: build
+        run: |
+          export GOOS=linux
+          export GOARCH=amd64
+          export CGO_ENABLED=0
+          export GO111MODULE=on
+
+          make build
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: amd64,arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          context: .
+          target: base
+          file: Dockerfile.multiarch
+          tags: |
+            ghcr.io/dhpollack/drone-docker-buildx:branch
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            DOCKER_VERSION=24
+

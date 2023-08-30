@@ -1,12 +1,12 @@
-module github.com/thegeeklab/drone-docker-buildx
+module github.com/dhpollack/drone-docker-buildx
 
 go 1.20
 
 require (
 	github.com/coreos/go-semver v0.3.1
+	github.com/dhpollack/drone-plugin-lib/v2 v2.3.5
 	github.com/joho/godotenv v1.5.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/thegeeklab/drone-plugin-lib/v2 v2.3.4
 	github.com/urfave/cli/v2 v2.25.5
 	golang.org/x/sys v0.11.0
 )
