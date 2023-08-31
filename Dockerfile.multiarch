@@ -1,25 +1,27 @@
-FROM --platform=$BUILDPLATFORM golang:1.20@sha256:741d6f9bcab778441efe05c8e4369d4f8ff56c9a635a97d77f55d8b0ec62f907 as build
+ARG TARGETBIN=gcr
+ARG DOCKER_VERSION=24
 
-ARG TARGETOS
-ARG TARGETARCH
+FROM --platform=$BUILDPLATFORM golang:1.20 as build
+
+ARG TARGETOS TARGETARCH
 
 ADD . /src
 WORKDIR /src
 
 RUN make build
 
-FROM docker:24.0-dind@sha256:020562d22f11c27997e00da910ed6b580d93094bc25841cb87aacab4ced4a882
+# BASE IMAGE
+FROM docker:${DOCKER_VERSION}-dind as base
 
-LABEL maintainer="Robert Kaussow <mail@thegeeklab.de>"
-LABEL org.opencontainers.image.authors="Robert Kaussow <mail@thegeeklab.de>"
+LABEL maintainer="David Pollack <david.pollack@deliveryhero.com>"
+LABEL org.opencontainers.image.authors_orig="Robert Kaussow <mail@thegeeklab.de>"
+LABEL org.opencontainers.image.authors="David Pollack <david.pollack@deliveryhero.com>"
 LABEL org.opencontainers.image.title="drone-docker-buildx"
-LABEL org.opencontainers.image.url="https://github.com/thegeeklab/drone-docker-buildx"
-LABEL org.opencontainers.image.source="https://github.com/thegeeklab/drone-docker-buildx"
-LABEL org.opencontainers.image.documentation="https://github.com/thegeeklab/drone-docker-buildx"
+LABEL org.opencontainers.image.url="https://github.com/dhpollack/drone-docker-buildx"
+LABEL org.opencontainers.image.source="https://github.com/dhpollack/drone-docker-buildx"
+LABEL org.opencontainers.image.documentation="https://github.com/dhpollack/drone-docker-buildx"
 
-ARG TARGETOS
-ARG TARGETARCH
-ARG BUILDX_VERSION
+ARG TARGETOS TARGETARCH BUILDX_VERSION
 
 # renovate: datasource=github-releases depName=docker/buildx
 ENV BUILDX_VERSION="${BUILDX_VERSION:-v0.11.2}"
@@ -39,3 +41,13 @@ RUN apk --update add --virtual .build-deps curl && \
 COPY --from=build /src/Corefile /etc/coredns/Corefile
 COPY --from=build /src/dist/drone-docker-buildx /bin/drone-docker-buildx
 ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "drone-docker-buildx"]
+
+# Specific Container Registries
+FROM ghcr.io/dhpollack/drone-docker-${TARGETBIN:-ecr}:latest as drone-xcr-plugin
+FROM base as xcr
+ARG TARGETBIN=gcr
+
+COPY --from=drone-xcr-plugin /bin/drone-${TARGETBIN} /bin
+RUN ln -s /bin/drone-docker-buildx /bin/drone-docker
+
+ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "/bin/drone-${TARGETBIN}"]

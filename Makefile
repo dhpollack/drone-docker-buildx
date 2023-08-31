@@ -7,7 +7,7 @@ EXECUTABLE := drone-docker-buildx
 
 DIST := dist
 DIST_DIRS := $(DIST)
-IMPORT := github.com/thegeeklab/$(EXECUTABLE)
+IMPORT := github.com/dhpollack/$(EXECUTABLE)
 
 GO ?= go
 CWD ?= $(shell pwd)

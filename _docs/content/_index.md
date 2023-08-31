@@ -2,12 +2,9 @@
 title: drone-docker-buildx
 ---
 
-[![Build Status](https://img.shields.io/drone/build/thegeeklab/drone-docker-buildx?logo=drone&server=https%3A%2F%2Fdrone.thegeeklab.de)](https://drone.thegeeklab.de/thegeeklab/drone-docker-buildx)
-[![Docker Hub](https://img.shields.io/badge/dockerhub-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/thegeeklab/drone-docker-buildx)
-[![Quay.io](https://img.shields.io/badge/quay-latest-blue.svg?logo=docker&logoColor=white)](https://quay.io/repository/thegeeklab/drone-docker-buildx)
-[![GitHub contributors](https://img.shields.io/github/contributors/thegeeklab/drone-docker-buildx)](https://github.com/thegeeklab/drone-docker-buildx/graphs/contributors)
-[![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/thegeeklab/drone-docker-buildx)
-[![License: MIT](https://img.shields.io/github/license/thegeeklab/drone-docker-buildx)](https://github.com/thegeeklab/drone-docker-buildx/blob/main/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/dhpollack/drone-docker-buildx)](https://github.com/dhpollack/drone-docker-buildx/graphs/contributors)
+[![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/dhpollack/drone-docker-buildx)
+[![License: MIT](https://img.shields.io/github/license/dhpollack/drone-docker-buildx)](https://github.com/dhpollack/drone-docker-buildx/blob/main/LICENSE)
 
 Drone plugin to build and publish multiarch Docker images with buildx.
 
@@ -33,7 +30,7 @@ name: default
 
 steps:
   - name: docker
-    image: thegeeklab/drone-docker-buildx:23
+    image: dhpollack/drone-docker-buildx:23
     privileged: true
     settings:
       username: octocat
@@ -64,7 +61,7 @@ name: default
 
 steps:
   - name: docker
-    image: thegeeklab/drone-docker-buildx:23
+    image: dhpollack/drone-docker-buildx:23
     privileged: true
     settings:
       registry: ghcr.io
@@ -82,7 +79,7 @@ name: default
 
 steps:
   - name: docker
-    image: thegeeklab/drone-docker-buildx:23
+    image: dhpollack/drone-docker-buildx:23
     privileged: true
     environment:
       AWS_ACCESS_KEY_ID:
@@ -111,7 +108,7 @@ make build
 Build the Docker image with the following command:
 
 ```shell
-docker build --file docker/Dockerfile.amd64 --tag thegeeklab/drone-docker-buildx .
+docker build --file docker/Dockerfile.amd64 --tag dhpollack/drone-docker-buildx .
 ```
 
 ## Test
@@ -124,5 +121,5 @@ docker run --rm \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   --privileged \
-  thegeeklab/drone-docker-buildx --dry-run
+  dhpollack/drone-docker-buildx --dry-run
 ```

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/thegeeklab/drone-docker-buildx/plugin"
-	"github.com/thegeeklab/drone-plugin-lib/v2/drone"
+	"github.com/dhpollack/drone-docker-buildx/plugin"
+	"github.com/dhpollack/drone-plugin-lib/v2/drone"
 	"github.com/urfave/cli/v2"
 )
 
