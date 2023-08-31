@@ -42,7 +42,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          push: ${{  }}
+          push: true
           context: .
           target: base
           file: Dockerfile.multiarch
