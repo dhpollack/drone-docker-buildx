@@ -7,7 +7,20 @@ defaults:
     shell: bash
 
 jobs:
-  build-base:
+  check-dind:
+    runs-on: ubuntu-latest
+    outputs:
+      dind_version: ${{ steps.dind.outputs.dind_version }}
+    container:
+      image: docker:dind
+    steps:
+      - name: 'Get latest dind version'
+        id: dind
+        shell: sh
+        run: |
+          echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
+  compare-dind:
+    needs: check-dind
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,17 +31,11 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 24.0.5
-      - name: 'Get latest dind version'
-        id: dind
-        image: docker:dind
-        shell: sh
-        run: |
-          echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
       - id: version
         uses: madhead/semver-utils@latest
         with:
           version: ${{ steps.previoustag.outputs.tag }}
-          compare-to: ${{ steps.dind.outputs.dind_version }}
+          compare-to: ${{ needs.check-dind.outputs.dind_version }}
       - run: |
           echo "${{ steps.version.outputs.release }}"           # 1.2.3
           echo "${{ steps.version.outputs.major }}"             # 1
