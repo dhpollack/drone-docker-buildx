@@ -1,0 +1,53 @@
+name: Check Docker - Check docker dind version and create tag
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check-dind:
+    runs-on: ubuntu-latest
+    outputs:
+      dind_version: ${{ steps.dind.outputs.dind_version }}
+      dind_version: ${{ steps.dind.outputs.dind_version_v }}
+    container:
+      image: docker:dind
+    steps:
+      - name: 'Get latest dind version'
+        id: dind
+        shell: sh
+        run: |
+          echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
+          echo "dind_version_v=v$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
+  compare-dind:
+    needs: check-dind
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 24.0.5
+      - id: version
+        uses: madhead/semver-utils@latest
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+          compare-to: ${{ needs.check-dind.outputs.dind_version }}
+      - name: Create tag
+        if: "${{ steps.version.outputs.comparison-result }}" == "<"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/' + ${{ needs.check-dind.outputs.dind_version }},
+              sha: context.sha
+            })
