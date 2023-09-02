@@ -1,6 +1,8 @@
-name: Tag - Build and Push Drone Docker Buildx Plugin
+name: Check Docker - Check docker dind version and create tag
 
-on: [push]
+on:
+  schedule:
+    - cron: '0 4 * * *'
 
 defaults:
   run:
@@ -11,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dind_version: ${{ steps.dind.outputs.dind_version }}
+      dind_version: ${{ steps.dind.outputs.dind_version_v }}
     container:
       image: docker:dind
     steps:
@@ -19,6 +22,7 @@ jobs:
         shell: sh
         run: |
           echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
+          echo "dind_version_v=v$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
   compare-dind:
     needs: check-dind
     runs-on: ubuntu-latest
@@ -36,21 +40,14 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.tag }}
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
-      - run: |
-          echo "${{ steps.version.outputs.release }}"           # 1.2.3
-          echo "${{ steps.version.outputs.major }}"             # 1
-          echo "${{ steps.version.outputs.minor }}"             # 2
-          echo "${{ steps.version.outputs.patch }}"             # 3
-          echo "${{ steps.version.outputs.build }}"             # 42.24
-          echo "${{ steps.version.outputs.build-parts }}"       # 2
-          echo "${{ steps.version.outputs.build-0 }}"           # 42
-          echo "${{ steps.version.outputs.build-1 }}"           # 24
-          echo "${{ steps.version.outputs.comparison-result }}" # <
-          echo "${{ steps.version.outputs.satisfies }}"         # true
-          echo "${{ steps.version.outputs.inc-major }}"         # 2.0.0
-          echo "${{ steps.version.outputs.inc-premajor }}"      # 2.0.0-0
-          echo "${{ steps.version.outputs.inc-minor }}"         # 1.3.0
-          echo "${{ steps.version.outputs.inc-preminor }}"      # 1.3.0-0
-          echo "${{ steps.version.outputs.inc-patch }}"         # 1.2.4
-          echo "${{ steps.version.outputs.inc-prepatch }}"      # 1.2.4-0
-          echo "${{ steps.version.outputs.inc-prerelease }}"    # 1.2.4-0
+      - name: Create tag
+        if: "${{ steps.version.outputs.comparison-result }}" == "<"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/' + ${{ needs.check-dind.outputs.dind_version }},
+              sha: context.sha
+            })
