@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dind_version: ${{ steps.dind.outputs.dind_version }}
-      dind_version: ${{ steps.dind.outputs.dind_version_v }}
     container:
       image: docker:dind
     steps:
@@ -22,7 +21,6 @@ jobs:
         shell: sh
         run: |
           echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
-          echo "dind_version_v=v$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
   compare-dind:
     needs: check-dind
     runs-on: ubuntu-latest
@@ -41,13 +39,13 @@ jobs:
           version: ${{ steps.previoustag.outputs.tag }}
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
       - name: Create tag
-        if: "${{ steps.version.outputs.comparison-result }}" == "<"
+        if: ${{ steps.version.outputs.comparison-result }} == '<'
         uses: actions/github-script@v6
         with:
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/' + ${{ needs.check-dind.outputs.dind_version }},
+              ref: 'refs/tags/v' + ${{ needs.check-dind.outputs.dind_version }},
               sha: context.sha
             })
