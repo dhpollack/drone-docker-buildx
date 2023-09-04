@@ -24,6 +24,8 @@ jobs:
   compare-dind:
     needs: check-dind
     runs-on: ubuntu-latest
+    outputs:
+      comparison-result: ${{ steps.version.outputs.comparison-result }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,14 +40,18 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.tag }}
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
+  create-tag:
+    needs: [check-dind, compare-dind]
+    if: ${{ needs.compare-dind.outputs.comparison-result }} == '<'
+    runs-on: ubuntu-latest
+    steps:
       - name: Create tag
-        if: ${{ steps.version.outputs.comparison-result }} == '<'
         uses: actions/github-script@v6
         with:
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v' + ${{ needs.check-dind.outputs.dind_version }},
+              ref: 'refs/tags/v' + '${{ needs.check-dind.outputs.dind_version }}',
               sha: context.sha
             })
