@@ -42,7 +42,7 @@ jobs:
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
   create-tag:
     needs: [check-dind, compare-dind]
-    if: ${{ needs.compare-dind.outputs.comparison-result }} == '<'
+    if: needs.compare-dind.outputs.comparison-result == '<'
     runs-on: ubuntu-latest
     steps:
       - name: Create tag
