@@ -1,9 +1,6 @@
 name: Tag - Build and Push Drone Docker Buildx Plugin
 
-on:
-  push:
-    tags:
-      - v*
+on: [create]
 
 defaults:
   run:
@@ -11,6 +8,7 @@ defaults:
 
 jobs:
   build-base:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:
       - id: no_v
@@ -49,6 +47,7 @@ jobs:
           build-args: |
             DOCKER_VERSION=${{ steps.version.outputs.release }}
   build-plugins:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
       matrix:
         targetbin: [acr, gcr, ecr, heroku]
