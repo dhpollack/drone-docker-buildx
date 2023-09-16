@@ -43,7 +43,7 @@ COPY --from=build /src/dist/drone-docker-buildx /bin/drone-docker-buildx
 ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "drone-docker-buildx"]
 
 # Specific Container Registries
-FROM ghcr.io/dhpollack/drone-docker-${TARGETBIN:-ecr}:latest as drone-xcr-plugin
+FROM plugins/${TARGETBIN:-ecr}:latest as drone-xcr-plugin
 FROM base as xcr
 ARG TARGETBIN=gcr
 
