@@ -44,6 +44,8 @@ jobs:
           build-args: |
             DOCKER_VERSION=${{ steps.version.outputs.release }}
             BUILDX_VERSION=v0.11.2
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   build-plugins:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
