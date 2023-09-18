@@ -1,3 +1,5 @@
+.git/
+.github/
 /dist/
 /release/
 /drone-docker-buildx*

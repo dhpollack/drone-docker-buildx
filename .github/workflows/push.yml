@@ -41,6 +41,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             DOCKER_VERSION=24
+            BUILDX_VERSION=v0.11.2
+            GITHUB_REF_NAME=${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
