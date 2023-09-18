@@ -3,6 +3,8 @@ name: Push - Build Drone Docker BuildX Plugin
 
 on:
   push:
+    branches:
+      - '**'
     tags-ignore:
       - '**'
 
