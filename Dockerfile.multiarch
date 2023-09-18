@@ -41,13 +41,3 @@ RUN apk --update add --virtual .build-deps curl && \
 COPY --from=build /src/Corefile /etc/coredns/Corefile
 COPY --from=build /src/dist/drone-docker-buildx /bin/drone-docker-buildx
 ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "drone-docker-buildx"]
-
-# Specific Container Registries
-FROM plugins/${TARGETBIN:-ecr}:latest as drone-xcr-plugin
-FROM base as xcr
-ARG TARGETBIN=gcr
-
-COPY --from=drone-xcr-plugin /bin/drone-${TARGETBIN} /bin
-RUN ln -s /bin/drone-docker-buildx /bin/drone-docker
-
-ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "/bin/drone-${TARGETBIN}"]

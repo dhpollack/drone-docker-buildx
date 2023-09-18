@@ -75,7 +75,7 @@ jobs:
           push: true
           context: .
           target: xcr
-          file: Dockerfile.multiarch
+          file: Dockerfile-registries.multiarch
           tags: |
             ghcr.io/dhpollack/drone-docker-buildx-${{ matrix.targetbin }}:${{ steps.version.outputs.release }}
             ghcr.io/dhpollack/drone-docker-buildx-${{ matrix.targetbin }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
@@ -85,5 +85,3 @@ jobs:
           build-args: |
             TARGETBIN=${{ matrix.targetbin }}
             DOCKER_VERSION=${{ steps.version.outputs.release }}
-            BUILDX_VERSION=v0.11.2
-          cache-from: type=registry,ref=ghcr.io/dhpollack/drone-docker-buildx:${{ steps.version.outputs.release }}
