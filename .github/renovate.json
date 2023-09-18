@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "force": {
+    "constraints": {
+      "go": "1.20"
+    }
+  }
+}
