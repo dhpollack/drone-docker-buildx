@@ -1,9 +1,9 @@
 ARG DOCKER_VERSION
-ARG TARGETBIN=gcr
+ARG TARGETBIN
 # Specific Container Registries
-FROM plugins/${TARGETBIN:-ecr}:latest as drone-xcr-plugin
+FROM plugins/${TARGETBIN}:latest as drone-xcr-plugin
 FROM ghcr.io/dhpollack/drone-docker-buildx:${DOCKER_VERSION} as xcr
-ARG TARGETBIN=gcr
+ARG TARGETBIN
 
 COPY --from=drone-xcr-plugin /bin/drone-${TARGETBIN} /bin
 RUN ln -s /bin/drone-docker-buildx /bin/drone-docker
