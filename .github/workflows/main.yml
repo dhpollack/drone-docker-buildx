@@ -43,6 +43,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             DOCKER_VERSION=${{ steps.version.outputs.release }}
+            BUILDX_VERSION=v0.11.2
+            GITHUB_REF_NAME=${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   build-plugins:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
@@ -74,7 +78,7 @@ jobs:
           push: true
           context: .
           target: xcr
-          file: Dockerfile.multiarch
+          file: Dockerfile-registries.multiarch
           tags: |
             ghcr.io/dhpollack/drone-docker-buildx-${{ matrix.targetbin }}:${{ steps.version.outputs.release }}
             ghcr.io/dhpollack/drone-docker-buildx-${{ matrix.targetbin }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
@@ -84,4 +88,3 @@ jobs:
           build-args: |
             TARGETBIN=${{ matrix.targetbin }}
             DOCKER_VERSION=${{ steps.version.outputs.release }}
-          cache-from: type=registry,ref=ghcr.io/dhpollack/drone-docker-buildx:${{ steps.version.outputs.release }}

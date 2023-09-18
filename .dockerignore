@@ -1,0 +1,9 @@
+.git/
+.github/
+/dist/
+/release/
+/drone-docker-buildx*
+
+coverage.out
+CHANGELOG.md
+
