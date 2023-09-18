@@ -1,6 +1,3 @@
-ARG TARGETBIN=gcr
-ARG DOCKER_VERSION=24
-
 FROM --platform=$BUILDPLATFORM golang:1.20 as build
 
 ARG TARGETOS TARGETARCH
@@ -9,6 +6,8 @@ ADD . /src
 WORKDIR /src
 
 RUN make build
+
+ARG DOCKER_VERSION=24
 
 # BASE IMAGE
 FROM docker:${DOCKER_VERSION}-dind as base
