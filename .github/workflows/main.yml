@@ -43,6 +43,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             DOCKER_VERSION=${{ steps.version.outputs.release }}
+            BUILDX_VERSION=v0.11.2
   build-plugins:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
@@ -84,4 +85,5 @@ jobs:
           build-args: |
             TARGETBIN=${{ matrix.targetbin }}
             DOCKER_VERSION=${{ steps.version.outputs.release }}
+            BUILDX_VERSION=v0.11.2
           cache-from: type=registry,ref=ghcr.io/dhpollack/drone-docker-buildx:${{ steps.version.outputs.release }}
