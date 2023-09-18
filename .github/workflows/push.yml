@@ -1,7 +1,10 @@
 name: Push - Build Drone Docker BuildX Plugin
 
 
-on: [push]
+on:
+  push:
+    tags-ignore:
+      - '**'
 
 defaults:
   run:
