@@ -6,8 +6,7 @@ FROM ghcr.io/dhpollack/drone-docker-buildx:${DOCKER_VERSION} as xcr
 ARG TARGETBIN
 
 COPY --from=drone-xcr-plugin /bin/drone-${TARGETBIN} /bin
-RUN ln -s /bin/drone-docker-buildx /bin/drone-docker
+RUN ln -s /bin/drone-docker-buildx /bin/drone-docker \
+    ln -s /bin/docker-${TARGETBIN} /bin/drone-xcr
 
-ENV TARGETBIN=${TARGETBIN}
-
-ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "/bin/drone-${TARGETBIN}"]
+ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh", "/bin/drone-xcr"]
