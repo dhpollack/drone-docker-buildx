@@ -48,6 +48,7 @@ jobs:
       - name: Create tag
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.DRONE_DOCKER_BUILDX_ADD_TAGS }}
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
