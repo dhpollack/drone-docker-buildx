@@ -51,7 +51,7 @@ jobs:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
       matrix:
-        targetbin: [acr, gcr, ecr, heroku]
+        targetbin: [acr, gcr, ecr, gar, heroku]
     runs-on: ubuntu-latest
     needs: build-base
     steps:
