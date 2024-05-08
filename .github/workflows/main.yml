@@ -1,6 +1,10 @@
 name: Tag - Build and Push Drone Docker Buildx Plugin
 
-on: [create]
+on:
+  push:
+    tags:
+      - "v**"
+  create:
 
 defaults:
   run:
