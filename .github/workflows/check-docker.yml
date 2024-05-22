@@ -21,6 +21,7 @@ jobs:
         shell: sh
         run: |
           echo "dind_version=$(echo $DOCKER_VERSION)" >> $GITHUB_OUTPUT
+
   compare-dind:
     needs: check-dind
     runs-on: ubuntu-latest
@@ -35,14 +36,18 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 24.0.5
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag
+        with: 
+          tag: v${{ needs.check-dind.outputs.dind_version }}
       - id: version
         uses: madhead/semver-utils@latest
         with:
           version: ${{ steps.previoustag.outputs.tag }}
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
   create-tag:
-    needs: [check-dind, compare-dind]
-    if: needs.compare-dind.outputs.comparison-result == '<'
+    needs: [check-dind, compare-dind, check-tag]
+    if: needs.compare-dind.outputs.comparison-result == '<' && needs.check-tag.outputs.exists == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Create tag
