@@ -46,8 +46,8 @@ jobs:
           version: ${{ steps.previoustag.outputs.tag }}
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
   create-tag:
-    needs: [check-dind, compare-dind, check-tag]
-    if: needs.compare-dind.outputs.comparison-result == '<' && needs.check-tag.outputs.exists == 'false'
+    needs: [check-dind, compare-dind]
+    if: needs.compare-dind.outputs.comparison-result == '<' && needs.compare-dind.outputs.exists == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Create tag
