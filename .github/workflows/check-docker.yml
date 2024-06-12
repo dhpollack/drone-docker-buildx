@@ -36,10 +36,6 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 24.0.5
-      - uses: mukunku/tag-exists-action@v1.6.0
-        id: check-tag
-        with: 
-          tag: v${{ needs.check-dind.outputs.dind_version }}
       - id: version
         uses: madhead/semver-utils@latest
         with:
@@ -47,10 +43,15 @@ jobs:
           compare-to: ${{ needs.check-dind.outputs.dind_version }}
   create-tag:
     needs: [check-dind, compare-dind]
-    if: needs.compare-dind.outputs.comparison-result == '<' && needs.compare-dind.outputs.exists == 'false'
+    if: needs.compare-dind.outputs.comparison-result == '<'
     runs-on: ubuntu-latest
     steps:
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag
+        with: 
+          tag: v${{ needs.check-dind.outputs.dind_version }}
       - name: Create tag
+        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.DRONE_DOCKER_BUILDX_ADD_TAGS }}
