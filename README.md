@@ -1,5 +1,7 @@
 # drone-docker-buildx
 
+I will probably archive this soon because the official drone docker plugin now supports buildx.
+
 Drone plugin to build multiarch Docker images with buildx
 
 [![Build Status](https://img.shields.io/drone/build/dhpollack/drone-docker-buildx?logo=drone&server=https%3A%2F%2Fdrone.thegeeklab.de)](https://drone.thegeeklab.de/dhpollack/drone-docker-buildx)
