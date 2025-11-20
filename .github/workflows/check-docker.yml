@@ -28,7 +28,7 @@ jobs:
     outputs:
       comparison-result: ${{ steps.version.outputs.comparison-result }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: 'Get Previous tag'
